@@ -12,7 +12,7 @@ func (e GameError) Error() string {
 	return string(e)
 }
 
-type Game struct {
+type TicTacToe struct {
 	players      [2]player
 	board        Board
 	movingPlayer uint
@@ -20,11 +20,11 @@ type Game struct {
 	writer 		 io.Writer
 }
 
-func NewGame() Game {
+func NewTicTacToe() TicTacToe {
 	p1 := player{name: "player1", char: "X"}
 	p2 := player{name: "player2", char: "O"}
 	b := Board{}
-	return Game{players: [2]player{p1, p2},
+	return TicTacToe{players: [2]player{p1, p2},
 		movingPlayer: 1,
 		board:        b,
 		movesLeft:    uint(len(b) * len(b[0])),
@@ -32,7 +32,7 @@ func NewGame() Game {
 
 }
 
-func (g *Game) MakeMove(x, y uint) error {
+func (g *TicTacToe) MakeMove(x, y uint) error {
 
 	if 0 == g.movesLeft {
 		return GameError("There are no more free moves")
@@ -54,7 +54,7 @@ func (g *Game) MakeMove(x, y uint) error {
 	return nil
 }
 
-func (g *Game) CheckForWinningSituation() {
+func (g *TicTacToe) CheckForWinningSituation() {
 
 	b := &g.board
 
@@ -93,7 +93,7 @@ func (g *Game) CheckForWinningSituation() {
 	}
 }
 
-func (g *Game) allFieldsTheSame(x, y, dx, dy int) (areSame bool, winningPlayer *player) {
+func (g *TicTacToe) allFieldsTheSame(x, y, dx, dy int) (areSame bool, winningPlayer *player) {
 	b := &g.board
 
 	winningPlayerNumber := b[x][y]
@@ -111,11 +111,11 @@ func (g *Game) allFieldsTheSame(x, y, dx, dy int) (areSame bool, winningPlayer *
 	return true, &g.players[winningPlayerNumber-1]
 }
 
-func (g *Game) PrintWithWriter() {
+func (g *TicTacToe) PrintWithWriter() {
 	g.writer.Write([]byte(g.getBoard()))
 }
 
-func (g *Game) getBoard() string {
+func (g *TicTacToe) getBoard() string {
 	b := &g.board
 
 	board := ""
@@ -140,7 +140,7 @@ func (g *Game) getBoard() string {
 	return board
 }
 
-func (g *Game) PrintBoard() {
+func (g *TicTacToe) PrintBoard() {
 	b := &g.board
 
 	for i, height := 0, len(b)+2; i < height; i++ {
@@ -161,7 +161,7 @@ func (g *Game) PrintBoard() {
 	}
 }
 
-func (g *Game) SetPlayer(playerNumber int, playerName string, char string) error {
+func (g *TicTacToe) SetPlayer(playerNumber int, playerName string, char string) error {
 	if playerNumber > 2 || playerNumber < 1 {
 		return GameError("Player number must be 1 or 2")
 	}

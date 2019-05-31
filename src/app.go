@@ -18,7 +18,7 @@ type move struct {
 
 func main() {
 
-	game := model.NewGame()
+	game := model.NewTicTacToe()
 	game.PrintWithWriter()
 
 	ch := make(chan move)
@@ -60,7 +60,7 @@ func readInputLoop(r io.Reader, ch chan<- move) {
 	}
 }
 
-func moveLoop(g *model.Game, ch <-chan move) {
+func moveLoop(g *model.TicTacToe, ch <-chan move) {
 
 	for aMove := range ch {
 		g.MakeMove(aMove.x, aMove.y)
