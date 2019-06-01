@@ -36,6 +36,7 @@ func (c *cliController) Run() {
 		"Or press 'q' to quit\n\n")
 
 	ch := make(chan move)
+	defer close(ch)
 
 	go c.moveLoop(ch)
 
@@ -43,9 +44,8 @@ func (c *cliController) Run() {
 }
 
 func (c *cliController) readInputLoop(ch chan<- move) {
-	scanner := bufio.NewScanner(c.reader)
 
-	defer close(ch)
+	scanner := bufio.NewScanner(c.reader)
 
 	for {
 		time.Sleep(500 * time.Millisecond)
