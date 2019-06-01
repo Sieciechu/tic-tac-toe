@@ -17,11 +17,11 @@ type cliController struct {
 	boardPrinter BoardWriter
 }
 
-func NewCliController(g *ticTacToe, w io.Writer) cliController {
+func NewCliController(g *ticTacToe, w io.Writer) *cliController {
 	playersChars := [2]rune{'X', 'O'}
 	var a BoardWriter = &asciiBoardPrinter{w, playersChars}
 
-	return cliController{game: g,
+	return &cliController{game: g,
 		writer:       w,
 		reader:       os.Stdin,
 		boardPrinter: a}

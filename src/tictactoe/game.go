@@ -27,11 +27,11 @@ type move struct {
 	y uint
 }
 
-func NewTicTacToe() ticTacToe {
+func NewTicTacToe() *ticTacToe {
 	p1 := player{name: "player1", char: "X"}
 	p2 := player{name: "player2", char: "O"}
 	b := Board{}
-	return ticTacToe{players: [2]player{p1, p2},
+	return &ticTacToe{players: [2]player{p1, p2},
 		movingPlayer: 1,
 		board:        b,
 		movesLeft:    uint(len(b) * len(b[0]))}
