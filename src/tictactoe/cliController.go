@@ -57,8 +57,6 @@ func (c *cliController) readInputLoop(ch chan<- move) {
 
 		text := scanner.Text()
 
-		_ = text
-
 		if "q" == text {
 			break
 		}
