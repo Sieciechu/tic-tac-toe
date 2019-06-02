@@ -70,8 +70,11 @@ func (c *cliController) moveLoop(ch <-chan move) {
 	for aMove := range ch {
 		c.game.makeMove(aMove)
 		c.boardPrinter.WriteBoard(c.game.board)
-		c.game.checkForWinningSituation()
 
+		if player := c.game.checkForWinningSituation(); player != nil {
+			fmt.Fprintf(c.writer, `The game won player "%s"`+"\n", player.name)
+			break
+		}
 	}
 }
 

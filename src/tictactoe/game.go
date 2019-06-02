@@ -60,7 +60,7 @@ func (g *ticTacToe) makeMove(m move) error {
 	return nil
 }
 
-func (g *ticTacToe) checkForWinningSituation() {
+func (g *ticTacToe) checkForWinningSituation() *player {
 
 	b := g.board
 
@@ -70,33 +70,31 @@ func (g *ticTacToe) checkForWinningSituation() {
 	for x, rowCount := 0, len(b); x < rowCount; x++ {
 		areSame, winningPlayer = g.allFieldsTheSame(x, 0, 0, 1) // check rows
 		if areSame {
-			fmt.Printf("The game won player %s\n", winningPlayer.name)
-			return
+			return winningPlayer
 		}
 	}
 	areSame, winningPlayer = g.allFieldsTheSame(0, 0, 1, 1) // check first diagonal
 	if areSame {
-		fmt.Printf("The game won player %s\n", winningPlayer.name)
-		return
+		return winningPlayer
 	}
 
 	for y, colCount := 0, len(b[0]); y < colCount; y++ {
 		areSame, winningPlayer = g.allFieldsTheSame(0, y, 1, 0) // check cols
 		if areSame {
-			fmt.Printf("The game won player %s\n", winningPlayer.name)
-			return
+			return winningPlayer
 		}
 	}
 	areSame, winningPlayer = g.allFieldsTheSame(len(b)-1, 0, -1, 1) // check second diagonal
 	if areSame {
-		fmt.Printf("The game won player %s\n", winningPlayer.name)
-		return
+		return winningPlayer
 	}
 
 	if 0 == g.movesLeft && !areSame {
 		fmt.Println("Draw. Noone won")
-		return
+		return nil
 	}
+
+	return nil
 }
 
 func (g *ticTacToe) allFieldsTheSame(x, y, dx, dy int) (areSame bool, winningPlayer *player) {
