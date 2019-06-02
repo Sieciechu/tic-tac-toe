@@ -7,7 +7,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type cliController struct {
@@ -35,20 +34,20 @@ func (c *cliController) Run() {
 		"Type for example: 0 0\n"+
 		"Or press 'q' to quit\n\n")
 
-	ch := make(chan move)
-	defer close(ch)
+	moves := make(chan move)
+	prompt := make(chan int, 1)
+	prompt <- 1
 
-	go c.moveLoop(ch)
+	go c.moveLoop(moves, prompt)
 
-	c.readInputLoop(ch)
+	c.readInputLoop(moves, prompt)
 }
 
-func (c *cliController) readInputLoop(ch chan<- move) {
+func (c *cliController) readInputLoop(moves chan<- move, prompt <-chan int) {
 
 	scanner := bufio.NewScanner(c.reader)
 
-	for {
-		time.Sleep(500 * time.Millisecond)
+	for range prompt {
 		fmt.Fprint(c.writer, "Enter your move: ")
 
 		if false == scanner.Scan() {
@@ -61,13 +60,15 @@ func (c *cliController) readInputLoop(ch chan<- move) {
 			break
 		}
 
-		ch <- convertTwoNumbersStringToMove(text)
+		moves <- convertTwoNumbersStringToMove(text)
 	}
+
+	close(moves)
 }
 
-func (c *cliController) moveLoop(ch <-chan move) {
+func (c *cliController) moveLoop(moves <-chan move, prompt chan<- int) {
 
-	for aMove := range ch {
+	for aMove := range moves {
 		c.game.makeMove(aMove)
 		c.boardPrinter.WriteBoard(c.game.board)
 
@@ -75,7 +76,10 @@ func (c *cliController) moveLoop(ch <-chan move) {
 			fmt.Fprintf(c.writer, `The game won player "%s"`+"\n", player.name)
 			break
 		}
+
+		prompt <- 1
 	}
+	close(prompt)
 }
 
 func convertTwoNumbersStringToMove(s string) move {
