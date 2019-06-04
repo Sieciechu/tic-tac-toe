@@ -7,10 +7,7 @@ type ticTacToe struct {
 	movesLeft    uint
 }
 
-type player struct {
-	name string
-	char string
-}
+type player string
 
 type gameResult struct {
 	isFinished    bool
@@ -29,8 +26,8 @@ type move struct {
 }
 
 func NewTicTacToe() *ticTacToe {
-	p1 := player{name: "player1", char: "X"}
-	p2 := player{name: "player2", char: "O"}
+	p1 := player("player1")
+	p2 := player("player2")
 	b := Board{}
 	return &ticTacToe{players: [2]player{p1, p2},
 		movingPlayer: 1,
