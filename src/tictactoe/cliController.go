@@ -72,12 +72,21 @@ func (c *cliController) moveLoop(moves <-chan move, prompt chan<- int) {
 		c.game.makeMove(aMove)
 		c.boardPrinter.WriteBoard(c.game.board)
 
-		if player := c.game.checkForWinningSituation(); player != nil {
-			fmt.Fprintf(c.writer, `The game won player "%s"`+"\n", player.name)
-			break
+		gameResult := c.game.getGameResult()
+
+		if !gameResult.isFinished {
+			prompt <- 1
+			continue
 		}
 
-		prompt <- 1
+		if nil != gameResult.winningPlayer {
+			fmt.Fprintf(c.writer, `The game won player "%s"`+"\n", gameResult.winningPlayer.name)
+		} else {
+			fmt.Fprintf(c.writer, "Draw. Noone won")
+		}
+
+		break
+
 	}
 	close(prompt)
 }

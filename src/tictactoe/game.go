@@ -1,9 +1,5 @@
 package tictactoe
 
-import (
-	"fmt"
-)
-
 type ticTacToe struct {
 	players      [2]player
 	board        Board
@@ -14,6 +10,11 @@ type ticTacToe struct {
 type player struct {
 	name string
 	char string
+}
+
+type gameResult struct {
+	isFinished    bool
+	winningPlayer *player
 }
 
 type Board [3][3]uint
@@ -60,7 +61,7 @@ func (g *ticTacToe) makeMove(m move) error {
 	return nil
 }
 
-func (g *ticTacToe) checkForWinningSituation() *player {
+func (g *ticTacToe) getGameResult() gameResult {
 
 	b := g.board
 
@@ -70,31 +71,30 @@ func (g *ticTacToe) checkForWinningSituation() *player {
 	for x, rowCount := 0, len(b); x < rowCount; x++ {
 		areSame, winningPlayer = g.allFieldsTheSame(x, 0, 0, 1) // check rows
 		if areSame {
-			return winningPlayer
+			return gameResult{true, winningPlayer}
 		}
 	}
 	areSame, winningPlayer = g.allFieldsTheSame(0, 0, 1, 1) // check first diagonal
 	if areSame {
-		return winningPlayer
+		return gameResult{true, winningPlayer}
 	}
 
 	for y, colCount := 0, len(b[0]); y < colCount; y++ {
 		areSame, winningPlayer = g.allFieldsTheSame(0, y, 1, 0) // check cols
 		if areSame {
-			return winningPlayer
+			return gameResult{true, winningPlayer}
 		}
 	}
 	areSame, winningPlayer = g.allFieldsTheSame(len(b)-1, 0, -1, 1) // check second diagonal
 	if areSame {
-		return winningPlayer
+		return gameResult{true, winningPlayer}
 	}
 
 	if 0 == g.movesLeft && !areSame {
-		fmt.Println("Draw. Noone won")
-		return nil
+		return gameResult{true, nil}
 	}
 
-	return nil
+	return gameResult{false, nil}
 }
 
 func (g *ticTacToe) allFieldsTheSame(x, y, dx, dy int) (areSame bool, winningPlayer *player) {
