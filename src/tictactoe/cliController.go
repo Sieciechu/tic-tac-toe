@@ -15,25 +15,28 @@ type cliController struct {
 	writer       io.Writer
 	reader       io.Reader
 	boardPrinter BoardWriter
+	instructionBoardPrinter BoardWriter
 }
 
 // For simplicity this factory-method already has some defaults hardcoded
 func NewCliController(g *ticTacToe, w io.Writer) *cliController {
 	playersChars := [2]rune{'X', 'O'}
-	var a BoardWriter = &asciiBoardPrinter{w, playersChars}
 
 	return &cliController{game: g,
 		writer:       w,
 		reader:       os.Stdin,
-		boardPrinter: a}
+		boardPrinter: &asciiBoardPrinter{w, playersChars},
+		instructionBoardPrinter: &asciiInstructionBoardPrinter{w}}
 
 }
 
 func (c *cliController) Run() {
 	fmt.Fprintln(c.writer, "Tic-tac-toe start")
 	c.boardPrinter.WriteBoard(c.game.board)
-	fmt.Fprint(c.writer, "When prompt please enter move by typing cooridnates x,y={0,1,2}.\n"+
-		"Type for example: 0 0\n"+
+	fmt.Fprint(c.writer, "\nWhen prompt please enter move by choosing one of the following fields:\n")
+	c.instructionBoardPrinter.WriteBoard(c.game.board)
+	fmt.Fprint(c.writer,
+		"Type for example: 1\n"+
 		"Or press 'q' to quit\n\n")
 
 	moves := make(chan move)
@@ -62,7 +65,7 @@ func (c *cliController) readInputLoop(moves chan<- move, prompt <-chan int) {
 			break
 		}
 
-		moves <- convertTwoNumbersStringToMove(text)
+		moves <- convertNumberStringToMove(text)
 	}
 
 	close(moves)
@@ -103,4 +106,13 @@ func convertTwoNumbersStringToMove(s string) move {
 	}
 
 	return move{n[0], n[1]}
+}
+
+func convertNumberStringToMove(s string) (m move) {
+	i, _ := strconv.Atoi(s)
+
+	m.x = uint((i - 1) / 3)
+	m.y = uint((i - 1) % 3)
+
+	return
 }
