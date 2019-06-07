@@ -6,7 +6,6 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"strings"
 )
 
 // Command line interface controller
@@ -96,18 +95,7 @@ func (c *cliController) moveLoop(moves <-chan move, prompt chan<- int) {
 	close(prompt)
 }
 
-func convertTwoNumbersStringToMove(s string) move {
-	var n []uint
-	for _, f := range strings.Fields(s) {
-		i, err := strconv.Atoi(f)
-		if err == nil {
-			n = append(n, uint(i))
-		}
-	}
-
-	return move{n[0], n[1]}
-}
-
+// Support method. It converts field to move on the board
 func convertNumberStringToMove(s string) (m move) {
 	i, _ := strconv.Atoi(s)
 
