@@ -64,56 +64,64 @@ func (g *ticTacToe) makeMove(m move) error {
 	return nil
 }
 
-func (g *ticTacToe) getGameResult() gameResult {
+func (g *ticTacToe) getGameResult() (result gameResult) {
 
 	b := g.board
 
-	var areSame = false
-	var winningPlayer *player = nil
+	const ROW_COUNT = len(b)
+	const COL_COUNT = len(b[0])
+	const NUMBER_OF_WORKERS = ROW_COUNT + COL_COUNT + 2 // 2 is for two diagonals
 
-	for x, rowCount := 0, len(b); x < rowCount; x++ {
-		areSame, winningPlayer = g.allFieldsTheSame(x, 0, 0, 1) // check rows
-		if areSame {
-			return gameResult{true, winningPlayer}
+	var gameResults = make(chan gameResult, NUMBER_OF_WORKERS)
+
+	for x := 0; x < ROW_COUNT; x++ {
+		go g.allFieldsTheSame(gameResults, x, 0, 0, 1) // check rows
+
+	}
+	go g.allFieldsTheSame(gameResults, 0, 0, 1, 1) // check first diagonal
+
+	for y := 0; y < COL_COUNT; y++ {
+		go g.allFieldsTheSame(gameResults, 0, y, 1, 0) // check cols
+	}
+	go g.allFieldsTheSame(gameResults, ROW_COUNT-1, 0, -1, 1) // check second diagonal
+
+	for i := 0; i < NUMBER_OF_WORKERS; i++ {
+		result = <-gameResults
+		if result.isFinished {
+			return result
 		}
 	}
-	areSame, winningPlayer = g.allFieldsTheSame(0, 0, 1, 1) // check first diagonal
-	if areSame {
-		return gameResult{true, winningPlayer}
+
+	if 0 == g.movesLeft {
+		result.isFinished = true
 	}
 
-	for y, colCount := 0, len(b[0]); y < colCount; y++ {
-		areSame, winningPlayer = g.allFieldsTheSame(0, y, 1, 0) // check cols
-		if areSame {
-			return gameResult{true, winningPlayer}
-		}
-	}
-	areSame, winningPlayer = g.allFieldsTheSame(len(b)-1, 0, -1, 1) // check second diagonal
-	if areSame {
-		return gameResult{true, winningPlayer}
-	}
-
-	if 0 == g.movesLeft && !areSame {
-		return gameResult{true, nil}
-	}
-
-	return gameResult{false, nil}
+	return result
 }
 
-func (g *ticTacToe) allFieldsTheSame(x, y, dx, dy int) (areSame bool, winningPlayer *player) {
+// This is a support method. It checks if on the board for the given line there is a winner and game is finished
+// res : channel for the result
+// x : the row of the board to check
+// y : the column of the board to check
+// dx : delta-x, the amount by which x will be increased each step
+// dy : delta-y, the amount by which y will be increased each step
+func (g *ticTacToe) allFieldsTheSame(res chan<- gameResult, x, y, dx, dy int) {
 	b := &g.board
 
 	winningPlayerNumber := b[x][y]
 
 	if 0 == winningPlayerNumber {
-		return false, nil
+		res <- gameResult{false, nil}
+		return
 	}
 
 	for step, maxSteps := 0, len(b)-1; step < maxSteps; x, y, step = x+dx, y+dy, step+1 {
 		if winningPlayerNumber != b[x+dx][y+dy] {
-			return false, nil
+			res <- gameResult{false, nil}
+			return
 		}
 	}
 
-	return true, &g.players[winningPlayerNumber-1]
+	res <- gameResult{true, &g.players[winningPlayerNumber-1]}
+	return
 }
