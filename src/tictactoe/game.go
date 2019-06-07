@@ -9,10 +9,6 @@ type ticTacToe struct {
 
 type player string
 
-type gameResult struct {
-	isFinished    bool
-	winningPlayer *player
-}
 // Board for tic tac toe, each field has one of 3 values: 0=empty, 1=player1, 2=player2
 type Board [3][3]uint
 
@@ -27,6 +23,11 @@ type BoardWriter interface {
 type move struct {
 	x uint
 	y uint
+}
+
+type gameResult struct {
+	isFinished    bool
+	winningPlayer *player
 }
 
 // For simplicity this factory-method already has some defaults hardcoded
