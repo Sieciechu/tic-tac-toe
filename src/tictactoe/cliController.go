@@ -86,7 +86,7 @@ func (c *cliController) moveLoop(moves <-chan move, prompt chan<- int) {
 		if nil != gameResult.winningPlayer {
 			fmt.Fprintf(c.writer, `The game won player "%s"`+"\n", *gameResult.winningPlayer)
 		} else {
-			fmt.Fprintf(c.writer, "Draw. Noone won")
+			fmt.Fprintf(c.writer, "Draw. Noone won\n")
 		}
 
 		break
