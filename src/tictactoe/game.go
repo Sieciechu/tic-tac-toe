@@ -99,12 +99,9 @@ func (g *ticTacToe) getGameResult() (result gameResult) {
 	return result
 }
 
-// This is a support method. It checks if on the board for the given line there is a winner and game is finished
-// res : channel for the result
-// x : the row of the board to check
-// y : the column of the board to check
-// dx : delta-x, the amount by which x will be increased each step
-// dy : delta-y, the amount by which y will be increased each step
+// This is a support method. It checks if on the board for the given line there is a winner and game is finished.
+// How? It traverses n=len(board) fields starting from x,y and increasing coordinates by dx, dy each time.
+// And pushes the result to the channel.
 func (g *ticTacToe) allFieldsTheSame(res chan<- gameResult, x, y, dx, dy int) {
 	b := &g.board
 
