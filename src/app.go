@@ -9,6 +9,5 @@ func main() {
 
 	game := tictactoe.NewTicTacToe()
 	controller := tictactoe.NewCliController(game, os.Stdout)
-
 	controller.Run()
 }

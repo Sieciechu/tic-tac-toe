@@ -5,6 +5,8 @@ import (
 	"io"
 )
 
+// asciiInstructionBoardPrinter implements WriteBoard.
+// It prints the board using ASCII chars
 type asciiBoardPrinter struct {
 	writer  io.Writer
 	players [2]rune

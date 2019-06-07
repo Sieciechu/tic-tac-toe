@@ -13,9 +13,13 @@ type gameResult struct {
 	isFinished    bool
 	winningPlayer *player
 }
-
+// Board for tic tac toe, each field has one of 3 values: 0=empty, 1=player1, 2=player2
 type Board [3][3]uint
 
+// BoardWriter is the interface for writing the board to any output
+// BoardWriter writes b Board to an output defined in concrete implementation.
+// It returns the number of bytes written and any error encountered that caused the write to stop early.
+// Write must not modify the slice data, even temporarily.
 type BoardWriter interface {
 	WriteBoard(b Board) (n int, err error)
 }
@@ -25,6 +29,7 @@ type move struct {
 	y uint
 }
 
+// For simplicity this factory-method already has some defaults hardcoded
 func NewTicTacToe() *ticTacToe {
 	p1 := player("player1")
 	p2 := player("player2")

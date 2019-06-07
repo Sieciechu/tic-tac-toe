@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// Command line interface controller
 type cliController struct {
 	game         *ticTacToe
 	writer       io.Writer
@@ -16,6 +17,7 @@ type cliController struct {
 	boardPrinter BoardWriter
 }
 
+// For simplicity this factory-method already has some defaults hardcoded
 func NewCliController(g *ticTacToe, w io.Writer) *cliController {
 	playersChars := [2]rune{'X', 'O'}
 	var a BoardWriter = &asciiBoardPrinter{w, playersChars}
