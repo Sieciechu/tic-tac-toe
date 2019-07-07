@@ -1,5 +1,7 @@
 package tictactoe
 
+// ticTacToe struct containing needed information about the tic-tac-toe game: players, board, which turn it is
+//	(and how much moves left)
 type ticTacToe struct {
 	players      [2]player
 	board        Board
@@ -7,6 +9,7 @@ type ticTacToe struct {
 	movesLeft    uint
 }
 
+// simple type for player
 type player string
 
 // Board for tic tac toe, each field has one of 3 values: 0=empty, 1=player1, 2=player2
@@ -20,11 +23,14 @@ type BoardWriter interface {
 	WriteBoard(b Board) (n int, err error)
 }
 
+// move struct contains information about move coordinates
 type move struct {
 	x uint
 	y uint
 }
 
+// contains information about the gameResult: if game is finished (still playing, win, draw)
+//	and if someone wins the winner
 type gameResult struct {
 	isFinished    bool
 	winningPlayer *player
@@ -42,6 +48,7 @@ func NewTicTacToe() *ticTacToe {
 
 }
 
+// makes move for the player which the current turn belongs to
 func (g *ticTacToe) makeMove(m move) error {
 
 	if 0 == g.movesLeft {
@@ -64,6 +71,7 @@ func (g *ticTacToe) makeMove(m move) error {
 	return nil
 }
 
+// returns the game result (see gameResult struct)
 func (g *ticTacToe) getGameResult() (result gameResult) {
 
 	b := g.board
@@ -99,7 +107,7 @@ func (g *ticTacToe) getGameResult() (result gameResult) {
 	return result
 }
 
-// This is a support method. It checks if on the board for the given line there is a winner and game is finished.
+// This is a support method for getGameResult. It checks if on the board for the given line there is a winner and game is finished.
 // How? It traverses n=len(board) fields starting from x,y and increasing coordinates by dx, dy each time.
 // And pushes the result to the channel.
 func (g *ticTacToe) allFieldsTheSame(res chan<- gameResult, x, y, dx, dy int) {

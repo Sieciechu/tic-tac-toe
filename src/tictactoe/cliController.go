@@ -29,6 +29,7 @@ func NewCliController(g *ticTacToe, w io.Writer) *cliController {
 
 }
 
+// Run method - creates the main loop of the game
 func (c *cliController) Run() {
 	fmt.Fprintln(c.writer, "Tic-tac-toe start")
 	c.boardPrinter.WriteBoard(c.game.board)
@@ -47,6 +48,7 @@ func (c *cliController) Run() {
 	c.readInputLoop(moves, prompt)
 }
 
+// readInputLoop while prompt channel is open, it reads input moves and sends them to channel
 func (c *cliController) readInputLoop(moves chan<- move, prompt <-chan int) {
 
 	scanner := bufio.NewScanner(c.reader)
@@ -70,6 +72,7 @@ func (c *cliController) readInputLoop(moves chan<- move, prompt <-chan int) {
 	close(moves)
 }
 
+// moveLoop handles incoming moves from channel. If game is finished it closes the prompt loop
 func (c *cliController) moveLoop(moves <-chan move, prompt chan<- int) {
 
 	for aMove := range moves {
@@ -95,7 +98,7 @@ func (c *cliController) moveLoop(moves <-chan move, prompt chan<- int) {
 	close(prompt)
 }
 
-// Support method. It converts field to move on the board
+// Support method. It converts field to move on the board. Used by readInputLoop method
 func convertNumberStringToMove(s string) (m move) {
 	i, _ := strconv.Atoi(s)
 
