@@ -12,13 +12,14 @@ type ticTacToe struct {
 // simple type for player
 type player string
 
-// Board for tic tac toe, each field has one of 3 values: 0=empty, 1=player1, 2=player2
+// Board for tic tac toe, matrix 3*3, each field has one of 3 values: 0=empty, 1=player1, 2=player2
+// This type contains just data about tic-tac-toe board (it's not a view)
 type Board [3][3]uint
 
 // BoardWriter is the interface for writing the board to any output
 // BoardWriter writes b Board to an output defined in concrete implementation.
 // It returns the number of bytes written and any error encountered that caused the write to stop early.
-// Write must not modify the slice data, even temporarily.
+// Write must not modify the board data, even temporarily.
 type BoardWriter interface {
 	WriteBoard(b Board) (n int, err error)
 }
