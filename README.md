@@ -10,5 +10,6 @@ The easiest way is to use docker:
 
 `$ ./docker-run.sh` 
 
-#### Link do GoDoc
+
+#### Link do GoDoc:
 https://godoc.org/github.com/Sieciechu/tic-tac-toe/src/tictactoe
