@@ -9,3 +9,6 @@ The easiest way is to use docker:
 `$ ./docker-build-image.sh`
 
 `$ ./docker-run.sh` 
+
+#### Link do GoDoc
+https://godoc.org/github.com/Sieciechu/tic-tac-toe/src/tictactoe
